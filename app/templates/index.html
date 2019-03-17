@@ -17,15 +17,23 @@
     },
     body: JSON.stringify({id: 1, instruction: document.getElementById("action").value})
     }).then(response => response.json()).then(data => {document.getElementById("actionTo").value = data;}); */
-    fetch('/1/'+document.getElementById("action").value).then(response => response.text()).then(data => {document.getElementById("actionTo").value = data;});
+    fetch('/1/'+document.getElementById("action").value).then(response => response.text()).then(data => {document.getElementById("actionTo").value = data; 
+    var str = document.getElementById("actionTo").value;
+    if(str.includes("open.spotify.com"))
+    {
+      console.log(data)
+      window.open(data, "__blank");
+    }
+    });
   }
+
 </script> 
 
 <div class="input-group mb-3">
     <div class="input-group-prepend">
       <span class="input-group-text" id="basic-addon1">Action to do:</span>
     </div>
-    <input id="action" type="text" class="form-control" placeholder="Accion a realizar" aria-label="Username" aria-describedby="basic-addon1">
+    <input id="action" type="text" class="form-control" placeholder="Actions to take" aria-label="Username" aria-describedby="basic-addon1">
   </div>
 
   <div class="input-group mb-3">
@@ -40,6 +48,6 @@
     <div class="input-group-prepend">
       <span class="input-group-text">Actions applied</span>
     </div>
-    <textarea disabled id="actionTo" class="form-control" aria-label="With textarea"></textarea>
+    <textarea disabled id="actionTo" class="form-control" aria-label="With textarea" style="height:400px"></textarea>
   </div>
 </html>
