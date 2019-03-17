@@ -51,12 +51,16 @@ def validationMessage(income):
         "turn off" : "Luces apagadas"
     }
 
+    outgoing_message = ""
+
     if 'luz' in resp['entities']:
         incoming_message=resp['entities']['luz'][0]['value']
         if(incoming_message == "on"):
                 req = requests.get("http://"+HOST+"/on")
-                print(req.text)
+                outgoing_message="Luces Prendidas"
+		print(req.text)
         elif(incoming_message == "off"):
+		outgoing_message="Luces Apagadas"
                 req = requests.get("http://"+HOST+"/off")
         else:
             req = requests.get("http://"+HOST+"/state")
