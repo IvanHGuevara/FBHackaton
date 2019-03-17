@@ -21,24 +21,34 @@ def validationMessage(income):
         "prender luces": "Luces encendidas",
         "Apagar luces": "Luces apagadas",
         "apagar luces": "Luces apagadas",
-        "Luces encendidas?": 1
+        "state?": "state",
+        "State?": "state",
+        "Estado?": "state",
+        "estado?": "state",
+        "estado": "state",
+        "state": "state",
+        "Turn On" : "Luces encendidas",
+        "Turn Off" : "Luces apagadas",
+        "turn on" : "Luces encendidas",
+        "turn off" : "Luces apagadas"
     }
 
     if incoming_message in dict:
-        if dict[incoming_message] != 1:
+        if dict[incoming_message] != "state":
             outgoing_message = dict[incoming_message]
             if(outgoing_message == "Luces encendidas"):
                 req = requests.get("http://"+HOST+"/on")
+                print(req.text)
             elif(outgoing_message == "Luces apagadas"):
                 req = requests.get("http://"+HOST+"/off")
         else:
             req = requests.get("http://"+HOST+"/state")
             state = ""
-            if(req.text == "off"):
-                state = "APAGADO"
+            if(req.text == "Off"):
+                state = "OFF"
             else:  
-                state = "ENCENDIDO"
-            outgoing_message = "El estado actual de las luces es: " + state
+                state = "ON"
+            outgoing_message = "The current light state is: " + state
     else:
         outgoing_message = "Sorry! I don't recognize that instruction. Please try again"
 
