@@ -27,7 +27,7 @@ def validationMessage(income):
     if(len(incoming_message) < 0): 
         outgoing_message = "No data"
     #if(id_root == str(1)):
-    HOST = "192.168.1.5"
+    HOST = "0.0.0.0"
 
     dict={
         "Prender luces": "Luces encendidas",
