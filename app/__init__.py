@@ -8,9 +8,13 @@ import socket
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 from wit import Wit
+import os
+from apixu.client import ApixuClient
+
+#api_key = os.environ['6ccd8584cdc2431f82a35428191703']
+clientWeather = ApixuClient('6ccd8584cdc2431f82a35428191703')
 
 WIT_TOKEN = "I5Z52AJQR7MCBVZDW5SPVUPERS4SJ5P5"
-
 
 PORT_NUMBER = 8080
 SPOTIPY_CLIENT_ID = "79d4b9443c804d1c84ecb8190dcf4898"
@@ -80,6 +84,17 @@ def validationMessage(income):
             banda = resp['_text'].replace("spotify", "")
             banda = banda.replace("open", "")
             outgoing_message = get_linkTo(banda)
+    elif 'intent' in resp['entities']:
+        if 'clima' == resp['entities']['intent'][0]['value']:
+            for item in resp['entities']['location'][0]['resolved']['values']:
+                if("wikipedia" in item['external']):                         
+                    current = clientWeather.current(q=item['external']['wikipedia'])
+                    text = current['location']['name'] + "\n"
+                    text += current['location']['region'] + "\n"
+                    text += "Current temperature is: \n"
+                    text += str(current['current']['temp_c']) +"\n"
+                    text += "-------------- \n"
+                    outgoing_message += text
     else:
         outgoing_message = "Sorry! I don't recognize that instruction. Please try again"
 
