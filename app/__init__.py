@@ -95,6 +95,12 @@ def validationMessage(income):
                     text += str(current['current']['temp_c']) +"\n"
                     text += "-------------- \n"
                     outgoing_message += text
+        if 'puerta' == resp['entities']['intent'][0]['value']:
+            incoming_message=resp['entities']['intent'][0]['value']
+            print("Connecting to ->")
+            req = requests.get("http://192.168.43.183:5000/quien_es")
+            outgoing_message = "People will be in this URL -> http://192.168.43.183:5000/static/detection/FotoPuerta.jpg \n"
+            outgoing_message += req.content
     else:
         outgoing_message = "Sorry! I don't recognize that instruction. Please try again"
 
