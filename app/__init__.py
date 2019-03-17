@@ -7,6 +7,10 @@ import socket
 #socket.getaddrinfo('127.0.0.1', 5000)
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
+from wit import Wit
+
+WIT_TOKEN = "I5Z52AJQR7MCBVZDW5SPVUPERS4SJ5P5"
+
 
 PORT_NUMBER = 8080
 SPOTIPY_CLIENT_ID = "79d4b9443c804d1c84ecb8190dcf4898"
@@ -20,14 +24,15 @@ spotify = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
 app = Flask(__name__)
 
+client = Wit(WIT_TOKEN)
+
 
 def validationMessage(income):
-    incoming_message=income
-    
-    if(len(incoming_message) < 0): 
-        outgoing_message = "No data"
-    #if(id_root == str(1)):
-    HOST = "0.0.0.0"
+
+    resp = client.message(income)
+    print('Response: {}'.format(resp))
+
+    HOST = "192.168.1.5"
 
     dict={
         "Prender luces": "Luces encendidas",
@@ -46,13 +51,12 @@ def validationMessage(income):
         "turn off" : "Luces apagadas"
     }
 
-    if incoming_message in dict:
-        if dict[incoming_message] != "state":
-            outgoing_message = dict[incoming_message]
-            if(outgoing_message == "Luces encendidas"):
+    if 'luz' in resp['entities']:
+        incoming_message=resp['entities']['luz'][0]['value']
+        if(incoming_message == "on"):
                 req = requests.get("http://"+HOST+"/on")
                 print(req.text)
-            elif(outgoing_message == "Luces apagadas"):
+        elif(incoming_message == "off"):
                 req = requests.get("http://"+HOST+"/off")
         else:
             req = requests.get("http://"+HOST+"/state")
@@ -62,12 +66,17 @@ def validationMessage(income):
             else:  
                 state = "ON"
             outgoing_message = "The current light state is: " + state
-    elif(incoming_message[0:4] == "info"):
-        outgoing_message = search_song(incoming_message[4:])
-    elif(incoming_message[0:4] == "open"):
-        outgoing_message = get_linkTo(incoming_message[4:])
+    elif 'spotify' in resp['entities']:
+        incoming_message=resp['entities']['spotify'][0]['value']
+        if(incoming_message == "info"):
+            banda = resp['_text'].replace("spotify", "")
+            banda = banda.replace("info", "")
+            outgoing_message = search_song(banda)
+        if(incoming_message == "open"):
+            banda = resp['_text'].replace("spotify", "")
+            banda = banda.replace("open", "")
+            outgoing_message = get_linkTo(banda)
     else:
-        print(incoming_message[0:4])
         outgoing_message = "Sorry! I don't recognize that instruction. Please try again"
 
     return outgoing_message
@@ -79,6 +88,7 @@ def home():
 @app.route("/<id_root>/<instruction>")
 def send_instruction(id_root, instruction):
 
+    print(instruction)
     message = validationMessage(instruction)
 
     return message
@@ -86,6 +96,8 @@ def send_instruction(id_root, instruction):
 
 @app.route("/search/<name>")
 def search_song(name):
+    print("info",name)
+    name = name.replace("info", "")
     results = spotify.search(q='artist:' + name, type='artist')
     items = results['artists']['items']
     if len(items) > 0:
@@ -100,6 +112,8 @@ def search_song(name):
     #return items
 
 def get_linkTo(name):
+    print("open",name)
+    name = name.replace("abrir", "")
     results = spotify.search(q='artist:' + name, type='artist')
     items = results['artists']['items']
     if len(items) > 0:

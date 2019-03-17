@@ -4,7 +4,34 @@
       <script src="{{ url_for('static', filename='css/popper.min.js') }}"></script>
       <script src="{{ url_for('static', filename='css/popper.min.js') }}"></script>
       <script src="{{ url_for('static', filename='css/jquery-3.3.1.slim.min.js') }}"></script>
+      <center><img src="{{ url_for('static', filename='imgs/logo_front.png') }}"/></center>
   </head>
+
+<style>
+body {
+    animation: colorchange 50s; /* animation-name followed by duration in seconds*/
+       /* you could also use milliseconds (ms) or something like 2.5s */
+    -webkit-animation: colorchange 50s; /* Chrome and Safari */
+  }
+
+  @keyframes colorchange
+  {
+    0%   {background: white;}
+    25%  {background: whitesmoke;}
+    50%  {background: lightblue;}
+    75%  {background: blue;}
+    100% {background: darkblue;}
+  }
+
+  @-webkit-keyframes colorchange /* Safari and Chrome - necessary duplicate */
+  {
+    0%   {background: white;}
+    25%  {background: whitesmoke;}
+    50%  {background: lightblue;}
+    75%  {background: blue;}
+    100% {background: darkblue;}
+  }
+</style>
 
 <script>
   function postInstruction()
